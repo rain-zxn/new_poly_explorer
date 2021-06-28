@@ -28,6 +28,7 @@ import (
 	"github.com/shopspring/decimal"
 	"math/big"
 	"new_poly_explorer/DB"
+	"new_poly_explorer/basedef"
 	"strconv"
 	"strings"
 )
@@ -37,12 +38,6 @@ var (
 )
 
 const (
-	CHAIN_POLY     = uint64(0)
-	CHAIN_BTC      = uint64(1)
-	CHAIN_ETH      = uint64(2)
-	CHAIN_ONT      = uint64(3)
-	CHAIN_NEO      = uint64(4)
-	CHAIN_SWITCHEO = uint64(5)
 	BTC_TOKEN_NAME = "btc"
 	BTC_TOKEN_HASH = "0000000000000000000000000000000000000011"
 )
@@ -149,15 +144,15 @@ func ChainId2Name(chainId uint64) string {
 }
 
 func FormatFee(chain uint64, fee *BigInt) string {
-	if chain == CHAIN_BTC {
+	if chain == basedef.BTC_CROSSCHAIN_ID {
 		precision_new := decimal.New(int64(100000000), 0)
 		fee_new := decimal.New(fee.Int64(), 0)
 		return fee_new.Div(precision_new).String()
-	} else if chain == CHAIN_ONT {
+	} else if chain == basedef.ONT_CROSSCHAIN_ID {
 		precision_new := decimal.New(int64(1000000000), 0)
 		fee_new := decimal.New(fee.Int64(), 0)
 		return fee_new.Div(precision_new).String()
-	} else if chain == CHAIN_ETH {
+	} else if chain == basedef.ETHEREUM_CROSSCHAIN_ID {
 		precision_new := decimal.New(int64(1000000000000000000), 0)
 		fee_new := decimal.New(fee.Int64(), 0)
 		return fee_new.Div(precision_new).String()
@@ -185,20 +180,20 @@ func TxType2Name(ttype uint32) string {
 }
 
 func Hash2Address(chainId uint64, value string) string {
-	if chainId == CHAIN_ETH {
+	if chainId == basedef.ETHEREUM_CROSSCHAIN_ID {
 		addr := ethcommon.HexToAddress(value)
 		return strings.ToLower(addr.String()[2:])
-	} else if chainId == CHAIN_SWITCHEO {
+	} else if chainId == basedef.SWITCHEO_CROSSCHAIN_ID {
 		addr, _ := cosmos_types.AccAddressFromHex(value)
 		return addr.String()
-	} else if chainId == CHAIN_BTC {
+	} else if chainId == basedef.BTC_CROSSCHAIN_ID {
 		addrHex, _ := hex.DecodeString(value)
 		return string(addrHex)
-	} else if chainId == CHAIN_NEO {
+	} else if chainId == basedef.NEO_CROSSCHAIN_ID {
 		addrHex, _ := hex.DecodeString(value)
 		addr, _ := helper.UInt160FromBytes(addrHex)
 		return helper.ScriptHashToAddress(addr)
-	} else if chainId == CHAIN_ONT {
+	} else if chainId == basedef.ONT_CROSSCHAIN_ID {
 		value = HexStringReverse(value)
 		addr, _ := ontcommon.AddressFromHexString(value)
 		return addr.ToBase58()

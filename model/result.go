@@ -28,6 +28,7 @@
 package model
 
 import (
+	"new_poly_explorer/basedef"
 	"strconv"
 	"strings"
 )
@@ -83,7 +84,7 @@ func MakeExplorerInfoResp(chains []*Chain, statistics []*ChainStatistic, tokenBa
 		}
 		chainInfoResps = append(chainInfoResps, chainInfoResp)
 	}
-	crossTxNumber := getChainStatistic(CHAIN_POLY, statistics).In
+	crossTxNumber := getChainStatistic(basedef.POLY_CROSSCHAIN_ID, statistics).In
 	crossChainTokenResp := make([]*CrossChainTokenResp, 0)
 	for _, tokenBasic := range tokenBasics {
 		crossChainTokenResp = append(crossChainTokenResp, MakeTokenBasicResp(tokenBasic))
@@ -220,9 +221,9 @@ func makeFChainTxResp(fChainTx *SrcTransaction, token *Token) *FChainTxResp {
 			fChainTxResp.Transfer.ToTokenType = totoken.TokenType
 		}
 	}
-	if fChainTx.ChainId == CHAIN_ETH {
+	if fChainTx.ChainId == basedef.ETHEREUM_CROSSCHAIN_ID {
 		fChainTxResp.TxHash = "0x" + fChainTx.Key
-	} else if fChainTx.ChainId == CHAIN_SWITCHEO {
+	} else if fChainTx.ChainId == basedef.SWITCHEO_CROSSCHAIN_ID {
 		fChainTxResp.TxHash = strings.ToUpper(fChainTxResp.TxHash)
 	}
 	return fChainTxResp
@@ -322,9 +323,9 @@ func makeTChainTxResp(tChainTx *DstTransaction) *TChainTxResp {
 			tChainTxResp.Transfer.Amount = FormatAmount(token.Precision, tChainTx.DstTransfer.Amount)
 		}
 	}
-	if tChainTx.ChainId == CHAIN_ETH {
+	if tChainTx.ChainId == basedef.ETHEREUM_CROSSCHAIN_ID {
 		tChainTxResp.TxHash = "0x" + tChainTxResp.TxHash
-	} else if tChainTx.ChainId == CHAIN_SWITCHEO {
+	} else if tChainTx.ChainId == basedef.SWITCHEO_CROSSCHAIN_ID {
 		tChainTxResp.TxHash = strings.ToUpper(tChainTxResp.TxHash)
 	}
 	return tChainTxResp
